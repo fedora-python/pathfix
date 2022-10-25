@@ -1,20 +1,26 @@
 import os
+import shutil
 import subprocess
 import sys
 import unittest
-from test.support import os_helper
-from test.test_tools import scriptsdir, skip_if_missing
+
+# The following constant and function are based on os_helper
+# https://github.com/python/cpython/blob/main/Lib/test/support/os_helper.py
+TESTFN = "@test_{}_tmp".format(os.getpid()) + "-\xe0\xf2\u0258\u0141\u011f"
 
 
-# need Tools/script/ directory: skip if run on Python installed on the system
-skip_if_missing()
+def _unlink(path):
+    try:
+        os.unlink(path)
+    except (FileNotFoundError, NotADirectoryError):
+        pass
 
 
 class TestPathfixFunctional(unittest.TestCase):
-    script = os.path.join(scriptsdir, 'pathfix.py')
+    script = os.path.join(os.path.dirname(__file__), 'pathfix.py')
 
     def setUp(self):
-        self.addCleanup(os_helper.unlink, os_helper.TESTFN)
+        self.addCleanup(_unlink, TESTFN)
 
     def pathfix(self, shebang, pathfix_flags, exitcode=0, stdout='', stderr='',
                 directory=''):
@@ -24,7 +30,7 @@ class TestPathfixFunctional(unittest.TestCase):
             filename = os.path.join(directory, 'script-A_1.py')
             pathfix_arg = directory
         else:
-            filename = os_helper.TESTFN
+            filename = TESTFN
             pathfix_arg = filename
 
         with open(filename, 'w', encoding='utf8') as f:
@@ -56,8 +62,8 @@ class TestPathfixFunctional(unittest.TestCase):
         return new_shebang
 
     def test_recursive(self):
-        tmpdir = os_helper.TESTFN + '.d'
-        self.addCleanup(os_helper.rmtree, tmpdir)
+        tmpdir = TESTFN + '.d'
+        self.addCleanup(shutil.rmtree, tmpdir)
         os.mkdir(tmpdir)
         expected_stderr = f"recursedown('{os.path.basename(tmpdir)}')\n"
         self.assertEqual(
