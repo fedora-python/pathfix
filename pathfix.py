@@ -1,31 +1,5 @@
 #!/usr/bin/env python3
 
-# Change the #! line (shebang) occurring in Python scripts.  The new interpreter
-# pathname must be given with a -i option.
-#
-# Command line arguments are files or directories to be processed.
-# Directories are searched recursively for files whose name looks
-# like a python module.
-# Symbolic links are always ignored (except as explicit directory
-# arguments).
-# The original file is kept as a back-up (with a "~" attached to its name),
-# -n flag can be used to disable this.
-
-# Sometimes you may find shebangs with flags such as `#! /usr/bin/env python -si`.
-# Normally, pathfix overwrites the entire line, including the flags.
-# To change interpreter and keep flags from the original shebang line, use -k.
-# If you want to keep flags and add to them one single literal flag, use option -a.
-
-
-# Undoubtedly you can do this using find and sed or perl, but this is
-# a nice example of Python code that recurses down a directory tree
-# and uses regular expressions.  Also note several subtleties like
-# preserving the file's mode and avoiding to even write a temp file
-# when no changes are needed for a file.
-#
-# NB: by changing only the function fixfile() you can turn this
-# into a program for a different change to Python programs...
-
 import sys
 import os
 from stat import *
