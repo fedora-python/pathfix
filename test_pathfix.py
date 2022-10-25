@@ -41,7 +41,7 @@ class TestPathfixFunctional(unittest.TestCase):
             [sys.executable, self.script,
              *pathfix_flags, '-n', pathfix_arg],
             env={**os.environ, 'PYTHONIOENCODING': encoding},
-            capture_output=True)
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if stdout == '' and proc.returncode == 0:
             stdout = f'{filename}: updating\n'
