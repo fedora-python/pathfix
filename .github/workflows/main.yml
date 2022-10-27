@@ -1,0 +1,39 @@
+on:
+  push:
+    branches:
+    - "*"
+  pull_request:
+    branches:
+    - "*"
+
+name: Run Tox tests
+
+jobs:
+  tox_test:
+    name: Tox test
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v2
+    - name: Run Tox tests
+      uses: fedora-python/tox-github-action@master
+      with:
+        tox_env: ${{ matrix.tox_env }}
+    strategy:
+      matrix:
+        tox_env: [
+          # This list has to be maintained manually :(
+          # You can get it from `tox -l | sed "s/$/,/"`
+          py36,
+          py37,
+          py38,
+          py39,
+          py310,
+          py311,
+          # py312, - not yet available in Fedora
+          pypy37,
+          pypy38,
+          pypy39,
+        ]
+
+    # Use GitHub's Linux Docker host
+    runs-on: ubuntu-latest
